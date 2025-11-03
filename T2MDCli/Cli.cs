@@ -808,6 +808,9 @@ namespace GoldenSyrupGames.T2MD
                 }
             }
 
+            // write footer to the description file
+            await WriteCardFooterAsync(trelloCard, descriptionPath);
+
             if (downloadAttachmentsTask != null)
             {
                 // replace full http attachment URLs with local relative paths so the description
@@ -875,15 +878,7 @@ namespace GoldenSyrupGames.T2MD
             CliOptions options
         )
         {
-            // inject the short url into its output. Add a prefix to the short URL to make the
-            // original more easily greppable: a search of just the URL will show all files that
-            // reference it.
-            var descriptionContents =
-                $"Original URL: {trelloCard.ShortUrl}\n"
-                + $"\n"
-                + $"---\n"
-                + $"\n"
-                + $"{trelloCard.Desc}";
+            var descriptionContents = $"{trelloCard.Desc}";
             // sort the cards in order unless specified otherwise
             var descriptionFilename = options.NoNumbering
                 ? $"{usableCardName}.md"
@@ -893,6 +888,28 @@ namespace GoldenSyrupGames.T2MD
             await File.WriteAllTextAsync(descriptionPath, descriptionContents)
                 .ConfigureAwait(false);
             return (descriptionContents, descriptionPath);
+        }
+
+        /// <summary>
+        /// Write a footer for a card to the description file.
+        /// </summary>
+        /// <param name="trelloCard">The model of the card parsed from the json backup</param>
+        /// <param name="descriptionFilePath">The footer content is appended to this file.</param>
+        private static async Task WriteCardFooterAsync(
+            TrelloCardModel trelloCard,
+            string descriptionFilePath
+        )
+        {
+            // inject the short url into its output. Add a prefix to the short URL to make the
+            // original more easily greppable: a search of just the URL will show all files that
+            // reference it.
+            string footerContents =
+                $"\n\n"
+                + $"---\n"
+                + $"\n"
+                + $"Original URL: {trelloCard.ShortUrl}";
+            await File.AppendAllTextAsync(descriptionFilePath, footerContents)
+                .ConfigureAwait(false);
         }
 
         /// <summary>
