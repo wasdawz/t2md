@@ -878,7 +878,7 @@ namespace GoldenSyrupGames.T2MD
             CliOptions options
         )
         {
-            var descriptionContents = $"{trelloCard.Desc}";
+            var descriptionContents = $"{trelloCard.Desc}\n";
             // sort the cards in order unless specified otherwise
             var descriptionFilename = options.NoNumbering
                 ? $"{usableCardName}.md"
@@ -904,7 +904,7 @@ namespace GoldenSyrupGames.T2MD
             // original more easily greppable: a search of just the URL will show all files that
             // reference it.
             string footerContents =
-                $"\n\n"
+                $"\n"
                 + $"---\n"
                 + $"\n"
                 + $"Original URL: {trelloCard.ShortUrl}";
@@ -949,10 +949,8 @@ namespace GoldenSyrupGames.T2MD
                 string checklistsContents;
                 if (options.SingleFile)
                 {
-                    // if we're appending to the description file, put it on a separated new line
-                    // as the description contents might not end with one. Add a line separator to
-                    // try and separate it further
-                    checklistsContents = $"\n\n---\n\n";
+                    // Add a line separator to try and separate it further from the description
+                    checklistsContents = $"\n---\n";
                 }
                 else
                 {
@@ -973,7 +971,6 @@ namespace GoldenSyrupGames.T2MD
                         var checkContents = checkItem.State == "complete" ? "x" : " ";
                         checklistsContents += $"- [{checkContents}] {checkItem.Name}\n";
                     }
-                    checklistsContents += "\n";
                 }
 
                 // write the file
@@ -1036,14 +1033,13 @@ namespace GoldenSyrupGames.T2MD
                 if (options.SingleFile)
                 {
                     // if we're appending to the description file nest it as a second level heading.
-                    // Put it on a separated new line as the description contents might not end with
-                    // one. Add a line separator to try and separate it further
-                    commentsContents = $"\n\n---\n\n## Comments\n\n";
+                    // Add a line separator to try and separate it further from the description
+                    commentsContents = $"\n---\n## Comments\n";
                 }
                 else
                 {
                     // if it's a separate file, start with a modified title
-                    commentsContents = $"# {trelloCard.Name} - Comments\n\n";
+                    commentsContents = $"# {trelloCard.Name} - Comments\n";
                 }
 
                 // order the comments by date. ISO 8601 dates can be sorted as a string
@@ -1054,12 +1050,12 @@ namespace GoldenSyrupGames.T2MD
                 {
                     // separate each card's contents
                     string headingPrefix = options.SingleFile ? "###" : "##";
-                    commentsContents += $"{headingPrefix} " + new string('-', 40) + "\n\n";
+                    commentsContents += $"\n{headingPrefix} " + new string('-', 40) + "\n\n";
                     //commentsContents += "## " + new string('-', 10) + $"Comment on
                     //{trelloComment.Date}" + new string('-', 10) + "\n\n";
 
                     commentsContents += trelloComment.Data.Text;
-                    commentsContents += "\n\n";
+                    commentsContents += "\n";
                 }
 
                 // write the file
@@ -1129,9 +1125,7 @@ namespace GoldenSyrupGames.T2MD
                 if (options.SingleFile)
                 {
                     // if we're appending to the description file nest it as a second level heading.
-                    // Put it on a separated new line as the description contents might not end with
-                    // one
-                    attachmentListContents = $"\n\n---\n\n## Attachments\n\n";
+                    attachmentListContents = $"\n---\n## Attachments\n\n";
                 }
                 else
                 {
@@ -1163,7 +1157,7 @@ namespace GoldenSyrupGames.T2MD
                 string[] AttachmentTableLines = await Task.WhenAll(AttachmentDownloadTasks);
 
                 // record all lines in the file
-                attachmentListContents += String.Join("\n", AttachmentTableLines);
+                attachmentListContents += String.Join("\n", AttachmentTableLines) + "\n";
 
                 // write the file listing all the attachments
                 string outputPath;
