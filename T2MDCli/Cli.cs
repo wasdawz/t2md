@@ -932,10 +932,10 @@ namespace GoldenSyrupGames.T2MD
                 string checklistsContents;
                 if (options.SingleFile)
                 {
-                    // if we're appending to the description file nest it as a second level heading.
-                    // Put it on a separated new line as the description contents might not end with
-                    // one. Add a line separator to try and separate it further
-                    checklistsContents = $"\n\n---\n\n## Checklists\n\n";
+                    // if we're appending to the description file, put it on a separated new line
+                    // as the description contents might not end with one. Add a line separator to
+                    // try and separate it further
+                    checklistsContents = $"\n\n---\n\n";
                 }
                 else
                 {
@@ -948,8 +948,7 @@ namespace GoldenSyrupGames.T2MD
                 foreach (TrelloChecklistModel trelloChecklist in orderedCardChecklists)
                 {
                     // write each checklist title as the next subheading
-                    string headingPrefix = options.SingleFile ? "###" : "##";
-                    checklistsContents += $"{headingPrefix} {trelloChecklist.Name}\n\n";
+                    checklistsContents += $"## {trelloChecklist.Name}\n\n";
                     // write each entry in the checklist
                     foreach (TrelloCheckItemModel checkItem in trelloChecklist.CheckItems)
                     {
